@@ -2,7 +2,7 @@ use std::collections::HashSet;
 use std::io::{self, BufRead};
 
 fn main() {
-    let numbers = load_numbers(&mut io::stdin().lock());
+    let numbers = load_numbers(io::stdin().lock());
 
     println!("Total: {}", calculate_frequency(&numbers));
     println!("Repeat: {:?}", calculate_repeat(&numbers));
@@ -29,10 +29,6 @@ fn calculate_repeat(numbers: &[i32]) -> i32 {
     unreachable!();
 }
 
-fn load_numbers<T: BufRead>(stream: &mut T) -> Vec<i32> {
-    stream
-        .lines()
-        .flatten()
-        .flat_map(|s| s.trim().parse())
-        .collect()
+fn load_numbers(stream: impl BufRead) -> Vec<i32> {
+    stream.lines().flatten().flat_map(|s| s.parse()).collect()
 }
