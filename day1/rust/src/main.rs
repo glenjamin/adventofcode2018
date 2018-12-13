@@ -32,7 +32,7 @@ fn calculate_repeat(numbers: &[i32]) -> i32 {
 fn load_numbers<T: BufRead>(stream: &mut T) -> Vec<i32> {
     stream
         .lines()
-        .filter_map(|res| res.ok())
-        .filter_map(|s| s.trim().parse::<i32>().ok())
+        .flatten()
+        .flat_map(|s| s.trim().parse())
         .collect()
 }
