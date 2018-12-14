@@ -62,9 +62,8 @@ fn count_letters(id: &str) -> HashMap<char, i32> {
 fn common_id(ids: &[String]) -> Option<String> {
     for id in ids.iter() {
         for other in ids.iter() {
-            let common = similar_ids(id, other);
-            if common.is_some() {
-                return common;
+            if let Some(common) = similar_ids(id, other) {
+                return Some(common);
             }
         }
     }
@@ -73,19 +72,19 @@ fn common_id(ids: &[String]) -> Option<String> {
 }
 
 fn similar_ids(id: &str, other: &str) -> Option<String> {
-    let mut difference: Option<_> = None;
+    let mut differing = id
+        .char_indices()
+        .zip(other.chars())
+        .filter(|((_, a), b)| a != b)
+        .map(|((i, _), _)| i);
 
-    for ((i, a), b) in id.char_indices().zip(other.chars()) {
-        if a != b {
-            if difference.is_none() {
-                difference = Some(i);
-            } else {
-                return None;
-            }
+    if let Some(i) = differing.next() {
+        if differing.next().is_none() {
+            return Some((&id[..i]).to_owned() + &id[(i + 1)..]);
         }
     }
 
-    difference.map(|i| (&id[..i]).to_owned() + &id[(i + 1)..])
+    None
 }
 
 #[cfg(test)]
